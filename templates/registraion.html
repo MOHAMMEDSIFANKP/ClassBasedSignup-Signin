@@ -9,7 +9,7 @@
         <p class="mt-1 block font-sans text-base font-normal leading-relaxed text-gray-700 antialiased">
             Enter your details to register.
         </p>
-        {% include "alerts.html" %}
+ 
         <form class="mt-8 mb-2 w-80 max-w-screen-lg sm:w-96" method="post" action="{%url 'Signup'%}">
             {% csrf_token %} 
             <div class="relative h-11 w-full my-8 min-w-[200px]">
@@ -50,15 +50,26 @@
                 </label>
                 {{ form.email.errors }}
               </div>
-              <div class="relative h-11 my-4 w-full min-w-[200px]">
+              <div class="relative h-11 my-8 w-full min-w-[200px]">
                 <input
-                name="password"
+                name="password1"
                   class="peer h-full w-full border-b border-blue-gray-200 bg-transparent pt-4 pb-1.5 font-sans text-sm font-normal text-blue-gray-700 outline outline-0 transition-all placeholder-shown:border-blue-gray-200 focus:border-pink-500 focus:outline-0 disabled:border-0 disabled:bg-blue-gray-50"
                 />
                 <label class="after:content[' '] pointer-events-none absolute left-0 -top-2.5 flex h-full w-full select-none text-sm font-normal leading-tight text-blue-gray-500 transition-all after:absolute after:-bottom-2.5 after:block after:w-full after:scale-x-0 after:border-b-2 after:border-pink-500 after:transition-transform after:duration-300 peer-placeholder-shown:leading-tight peer-placeholder-shown:text-blue-gray-500 peer-focus:text-sm peer-focus:leading-tight peer-focus:text-pink-500 peer-focus:after:scale-x-100 peer-focus:after:border-pink-500 peer-disabled:text-transparent peer-disabled:peer-placeholder-shown:text-blue-gray-500">
                   Password
                 </label>
-                {{ form.password.errors }}
+                {{ form.password1.errors }}
+              </div>
+              <div class="relative h-11 my-8 w-full min-w-[200px]">
+                <input
+                name="password2"
+                  class="peer h-full w-full border-b border-blue-gray-200 bg-transparent pt-4 pb-1.5 font-sans text-sm font-normal text-blue-gray-700 outline outline-0 transition-all placeholder-shown:border-blue-gray-200 focus:border-pink-500 focus:outline-0 disabled:border-0 disabled:bg-blue-gray-50"
+                />
+                <label class="after:content[' '] pointer-events-none absolute left-0 -top-2.5 flex h-full w-full select-none text-sm font-normal leading-tight text-blue-gray-500 transition-all after:absolute after:-bottom-2.5 after:block after:w-full after:scale-x-0 after:border-b-2 after:border-pink-500 after:transition-transform after:duration-300 peer-placeholder-shown:leading-tight peer-placeholder-shown:text-blue-gray-500 peer-focus:text-sm peer-focus:leading-tight peer-focus:text-pink-500 peer-focus:after:scale-x-100 peer-focus:after:border-pink-500 peer-disabled:text-transparent peer-disabled:peer-placeholder-shown:text-blue-gray-500">
+                  Conform Password
+                </label>
+                
+                {{ form.password2.errors }}
               </div>
             <button
                 class="mt-6 block w-full select-none rounded-lg bg-pink-500 py-3 px-6 text-center align-middle font-sans text-xs font-bold uppercase text-white shadow-md shadow-pink-500/20 transition-all hover:shadow-lg hover:shadow-pink-500/40 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
