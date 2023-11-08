@@ -1,12 +1,11 @@
-from typing import Any
-from django.http import HttpRequest, HttpResponse
 from django.shortcuts import render,redirect
 from django.views.generic import *
 from django.urls import reverse_lazy
 from django.contrib.auth.models import User
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth import authenticate,login,logout
-from django.contrib.auth.forms import AuthenticationForm
+from django.core.paginator import Paginator
+from django.db.models import Q
 
 from .models import Binary
 from .forms import *
@@ -18,7 +17,7 @@ class Signup(CreateView):
     success_url =  reverse_lazy('Signin')
     def get(self, request):
         if request.user.is_authenticated:
-            return redirect('Home')
+            return redirect('UsersList')
         return render(request,self.template_name)
 
 class Signin(FormView):
@@ -26,7 +25,6 @@ class Signin(FormView):
     form_class = LoginForm
     success_url = '/'
     def form_valid(self, form):
-
         username = form.cleaned_data['username']
         password = form.cleaned_data['password']
 
@@ -34,10 +32,10 @@ class Signin(FormView):
         if user is not None:
             login(self.request, user)
         return super().form_valid(form)
-    
+        
     def get(self, request):
         if request.user.is_authenticated:
-            return redirect('Home')
+            return redirect('UsersList')
         return render(request,self.template_name)
 
 class signout(LoginRequiredMixin,View):
@@ -45,33 +43,33 @@ class signout(LoginRequiredMixin,View):
         logout(request)
         return redirect('Signin')
     
-from django.http import JsonResponse
 
 class UsersList(LoginRequiredMixin, ListView):
     login_url = 'signin/'
+    paginate_by = 3
     template_name = 'index.html'
-    queryset = User.objects.all()
+    queryset = User.objects.all().order_by('id')
     context_object_name = 'users'
 
-class SearchMixin:
-    def get_queryset(self):
-        queryset = super().get_queryset()
-        search_query = self.request.GET.get('search_query')
-        if search_query:
-            queryset = queryset.filter(username__icontains=search_query)
-        return queryset
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        paginator = Paginator(self.queryset, self.paginate_by)
+        page = self.request.GET.get('page')
+        users = paginator.get_page(page)
+        context['users'] = users
+        return context
 
-class SearchUsersView(SearchMixin, ListView):
-    model = User
-    context_object_name = 'users'
-    template_name = 'index.html'
-
-    def get(self, request, *args, **kwargs):
-        self.object_list = self.get_queryset()
-        data = [{'id':user.id,'username': user.username,'first_name' : user.first_name,'last_name' : user.last_name, 'email': user.email} for user in self.object_list]
-        return JsonResponse({'users': data})
-
-
+class SearchUserList(View):
+    paginate_by = 3
+    def get(self,request, *args, **kwargs):
+        query = request.GET.get("query")
+        results = User.objects.filter(Q(username__icontains=query) | Q(email__icontains = query) | Q(first_name__icontains = query) | Q(last_name__icontains = query)).order_by('id')
+        paginator = Paginator(results, self.paginate_by)
+        page = self.request.GET.get('page')
+        users = paginator.get_page(page)
+        context = {"users": users}
+        return render(request, "ajax/search_results.html", context)
+    
 class Home(LoginRequiredMixin,ListView):
     login_url = 'signin/'
     template_name = 'index.html'

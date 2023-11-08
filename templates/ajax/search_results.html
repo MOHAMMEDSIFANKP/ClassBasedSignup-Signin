@@ -1,0 +1,41 @@
+<table class="table table-striped">
+    <thead>
+      <tr>
+        <th scope="col">id</th>
+        <th scope="col">username</th>
+        <th scope="col">First</th>
+        <th scope="col">Last</th>
+        <th scope="col">Email</th>
+      </tr>
+    </thead>
+    <tbody id="search-results">
+      {% for user in users %}
+      <tr>
+        <th scope="row">{{user.id}}</th>
+        <td>{{user.username}}</td>
+        <td>{{user.first_name}}</td>
+        <td>{{user.last_name}}</td>
+        <td>{{user.email}}</td>
+       
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  <div class="d-flex justify-content-center align-content-center w-100 ">
+    <nav aria-label="Page navigation example">
+        <ul class="pagination">
+            {% if users.has_previous %}
+                <li class="page-item"><a class="page-link" href="?page={{ users.previous_page_number }}">Previous</a></li>
+            {% endif %}
+            {% for page_num in users.paginator.page_range %}
+                <li class="page-item {% if page_num == users.number %}active{% endif %}">
+                    <a class="page-link" href="?page={{ page_num }}">{{ page_num }}</a>
+                </li>
+            {% endfor %}
+            {% if users.has_next %}
+                <li class="page-item"><a class="page-link" href="?page={{ users.next_page_number }}">Next</a></li>
+            {% endif %}
+        </ul>
+    </nav>
+    
+</div>
